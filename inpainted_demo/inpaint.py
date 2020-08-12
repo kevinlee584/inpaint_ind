@@ -9,7 +9,7 @@ import PIL.Image
 def sample_images(imgs_dir):
 	all_images = glob.glob(imgs_dir+"/*.jpg")
 
-	assert len(all_images) == 0
+	assert len(all_images) > 0
 
 	unpainted_images = []
 	images_detail = []
