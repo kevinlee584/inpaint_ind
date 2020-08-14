@@ -18,11 +18,11 @@ if __name == '__main__':
 	vgg.compile(loss='mse', optimizer=common_optimizer, metrics=['accuracy'])
 
 	discriminator = BuildDiscriminator()
-	discriminator.load_weights("/content/gdrive/My Drive/discriminator_224.h5")
+	#discriminator.load_weights("/content/gdrive/My Drive/discriminator_224.h5")
 	discriminator.compile(loss='mse', optimizer=common_optimizer, metrics=['accuracy'])
 
 	generator = BuildGenerator()
-	generator.load_weights("/content/gdrive/My Drive/generator_224.h5")
+	#generator.load_weights("/content/gdrive/My Drive/generator_224.h5")
 	input_unpainted_images = keras.Input(shape_size)
 	input_inpainted_images = keras.Input(shape_size) 
 
