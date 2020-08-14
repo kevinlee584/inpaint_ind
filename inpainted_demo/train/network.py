@@ -107,3 +107,8 @@ def BuildDiscriminator():
   output = layers.Dense(units=1, activation='sigmoid')(dis9)
   model = keras.Model(inputs=[input_layer], outputs=[output], name='discriminator')
   return model
+
+  print(123)
+
+
+
