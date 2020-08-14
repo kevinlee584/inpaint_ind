@@ -4,7 +4,7 @@ from tensorflow.keras import layers
 def BuildVgg19():
 
   vgg = keras.applications.VGG19(weights='imagenet')
-  outputs = [vgg.layers[i].output for i in range(3, 10)]
+  outputs = [vgg.layers[i * 3].output for i in range(1, 4)]
   model = keras.Model([vgg.input], outputs)
 
   return model
@@ -67,43 +67,72 @@ def BuildDiscriminator():
 
   leakyrelu_alpha = 0.2
   momentum = 0.8
-  input_shape = (224, 224, 3)
+  global_input_shape = (224, 224, 3)
 
-  input_layer = keras.Input(shape=input_shape)
-  dis1 = layers.Conv2D(filters=64, kernel_size=3, strides=1, padding='same')(input_layer)
-  dis1 = layers.LeakyReLU(alpha=leakyrelu_alpha)(dis1)
+  global_input_layer = keras.Input(shape=global_input_shape)
+  global_dis1 = layers.Conv2D(filters=64, kernel_size=3, strides=1, padding='same')(input_layer)
+  global_dis1 = layers.LeakyReLU(alpha=leakyrelu_alpha)(global_dis1)
 
-  dis2 = layers.Conv2D(filters=64, kernel_size=3, strides=2, padding='same')(dis1)
-  dis2 = layers.LeakyReLU(alpha=leakyrelu_alpha)(dis2)
-  dis2 = layers.BatchNormalization(momentum=momentum)(dis2)
+  global_dis2 = layers.Conv2D(filters=64, kernel_size=3, strides=2, padding='same')(global_dis1)
+  global_dis2 = layers.LeakyReLU(alpha=leakyrelu_alpha)(global_dis2)
+  global_dis2 = layers.BatchNormalization(momentum=momentum)(global_dis2)
 
-  dis3 = layers.Conv2D(filters=128, kernel_size=3, strides=1, padding='same')(dis2)
-  dis3 = layers.LeakyReLU(alpha=leakyrelu_alpha)(dis3)
-  dis3 = layers.BatchNormalization(momentum=momentum)(dis3)
+  global_dis3 = layers.Conv2D(filters=128, kernel_size=3, strides=1, padding='same')(global_dis2)
+  global_dis3 = layers.LeakyReLU(alpha=leakyrelu_alpha)(global_dis3)
+  global_dis3 = layers.BatchNormalization(momentum=momentum)(global_dis3)
 
-  dis4 = layers.Conv2D(filters=128, kernel_size=3, strides=2, padding='same')(dis3)
-  dis4 = layers.LeakyReLU(alpha=leakyrelu_alpha)(dis4)
-  dis4 = layers.BatchNormalization(momentum=momentum)(dis4)
+  global_dis4 = layers.Conv2D(filters=128, kernel_size=3, strides=2, padding='same')(global_dis3)
+  global_dis4 = layers.LeakyReLU(alpha=leakyrelu_alpha)(global_dis4)
+  global_dis4 = layers.BatchNormalization(momentum=momentum)(global_dis4)
 
-  dis5 = layers.Conv2D(filters=256, kernel_size=3, strides=1, padding='same')(dis4)
-  dis5 = layers.LeakyReLU(alpha=leakyrelu_alpha)(dis5)
-  dis5 = layers.BatchNormalization(momentum=momentum)(dis5)
+  global_dis5 = layers.Conv2D(filters=256, kernel_size=3, strides=1, padding='same')(global_dis4)
+  global_dis5 = layers.LeakyReLU(alpha=leakyrelu_alpha)(global_dis5)
+  global_dis5 = layers.BatchNormalization(momentum=momentum)(global_dis5)
 
-  dis6 = layers.Conv2D(filters=256, kernel_size=3, strides=2, padding='same')(dis5)
-  dis6 = layers.LeakyReLU(alpha=leakyrelu_alpha)(dis6)
-  dis6 = layers.BatchNormalization(momentum=momentum)(dis6)
+  global_dis6 = layers.Conv2D(filters=256, kernel_size=3, strides=2, padding='same')(global_dis5)
+  global_dis6 = layers.LeakyReLU(alpha=leakyrelu_alpha)(global_dis6)
+  global_dis6 = layers.BatchNormalization(momentum=momentum)(global_dis6)
 
-  dis7 = layers.Conv2D(filters=512, kernel_size=3, strides=1, padding='same')(dis6)
-  dis7 = layers.LeakyReLU(alpha=leakyrelu_alpha)(dis7)
-  dis7 = layers.BatchNormalization(momentum=momentum)(dis7)
+  global_dis7 = layers.Conv2D(filters=512, kernel_size=3, strides=1, padding='same')(global_dis6)
+  global_dis7 = layers.LeakyReLU(alpha=leakyrelu_alpha)(global_dis7)
+  global_dis7 = layers.BatchNormalization(momentum=momentum)(global_dis7)
 
-  dis8 = layers.Conv2D(filters=512, kernel_size=3, strides=2, padding='same')(dis7)
-  dis8 = layers.LeakyReLU(alpha=leakyrelu_alpha)(dis8)
-  dis8 = layers.BatchNormalization(momentum=momentum)(dis8)
+  global_dis8 = layers.Conv2D(filters=512, kernel_size=3, strides=2, padding='same')(global_dis7)
+  global_dis8 = layers.LeakyReLU(alpha=leakyrelu_alpha)(global_dis8)
+  global_dis8 = layers.BatchNormalization(momentum=momentum)(global_dis8)
 
-  dis9 = layers.Dense(units=1024)(dis8)
-  dis9 = layers.LeakyReLU(alpha=0.2)(dis9)
+  global_dis9 = layers.Dense(units=1024)(global_dis8)
+  global_dis9 = layers.LeakyReLU(alpha=0.2)(global_dis9)
 
-  output = layers.Dense(units=1, activation='sigmoid')(dis9)
-  model = keras.Model(inputs=[input_layer], outputs=[output], name='discriminator')
+  global_output = layers.Dense(units=1, activation='sigmoid')(global_dis9)
+
+
+  local_input_shape = (56, 56, 3)
+
+  local_input_layer = keras.Input(shape=local_input_shape)
+  local_dis1 = layers.Conv2D(filters=256, kernel_size=3, strides=1, padding='same')(input_layer)
+  local_dis1 = layers.LeakyReLU(alpha=leakyrelu_alpha)(local_dis1)
+
+  local_dis2 = layers.Conv2D(filters=256, kernel_size=3, strides=2, padding='same')(local_dis1)
+  local_dis2 = layers.LeakyReLU(alpha=leakyrelu_alpha)(local_dis2)
+  local_dis2 = layers.BatchNormalization(momentum=momentum)(local_dis2)
+
+  local_dis3 = layers.Conv2D(filters=512, kernel_size=3, strides=1, padding='same')(local_dis2)
+  local_dis3 = layers.LeakyReLU(alpha=leakyrelu_alpha)(local_dis3)
+  local_dis3 = layers.BatchNormalization(momentum=momentum)(local_dis3)
+
+  local_dis4 = layers.Conv2D(filters=512, kernel_size=3, strides=2, padding='same')(local_dis3)
+  local_dis4 = layers.LeakyReLU(alpha=leakyrelu_alpha)(local_dis4)
+  local_dis4 = layers.BatchNormalization(momentum=momentum)(local_dis4)
+
+  local_dis5 = layers.Dense(units=1024)(local_dis4)
+  local_dis5 = layers.LeakyReLU(alpha=0.2)(local_dis5)
+
+  local_output = layers.Dense(units=1, activation='sigmoid')(local_dis9)
+
+  model = keras.Model(inputs=[local_input_layer, global_input_layer], outputs=[local_output, global_output], name='discriminator')
+
   return model
+
+
+
