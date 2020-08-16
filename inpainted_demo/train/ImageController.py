@@ -1,7 +1,7 @@
 import cv2 as cv
 import glob
 import numpy as np
-
+import random
 
 def sample_images(data_dir, batch_size, shape_size, PointGen, ns=0):
 	all_images = glob.glob(data_dir)
@@ -47,3 +47,14 @@ def tensor_to_image(tensor):
 		assert tensor.shape[0] == 1
 		tensor = tensor[0]
 	return PIL.Image.fromarray(tensor)
+
+def RandCropping(imgs, lenX, lenY):
+	new_Crop = []
+
+	for img in imgs:
+		shape = img.shape
+		x = random.randint(0, shape[1] - lenX)
+		y = random.randint(0, shape[0] - lenY)
+		new_Crop.append(img[y: y+lenY, x:x+lenX])
+
+	return np.array(new_Crop)
